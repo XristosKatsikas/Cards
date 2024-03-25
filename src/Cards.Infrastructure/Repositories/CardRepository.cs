@@ -1,5 +1,7 @@
 ﻿using Cards.Domain.Entities;
+using Cards.Domain.Enums;
 using Cards.Domain.Repositories.Abstractions;
+using System.Linq;
 
 namespace Cards.Infrastructure.Repositories
 {
@@ -32,14 +34,25 @@ namespace Cards.Infrastructure.Repositories
         {
             var fetchAllCards =  await GetAllAsync();
 
-            var finalCards = fetchAllCards
-                .Join(cards,
-                    fetchedCard => new { fetchedCard.Name, fetchedCard.DateCreated, fetchedCard.Color, fetchedCard.Status },
-                    card => new { card.Name, card.DateCreated, card.Color, card.Status },
-                    (fetchedCard, card) => fetchedCard)
-                .ToList();
+            // Create a HashSet to store the properties of cards for faster lookups
+            var cardSet = new HashSet<(DateTime, Status, string, string)>();
 
-            return finalCards;
+            foreach (var card in cards)
+            {
+                cardSet.Add((card.DateCreated, card.Status, card.Color, card.Name));
+            }
+
+            var finalCardList = new List<Card>();
+
+            foreach (var item in fetchAllCards)
+            {
+                if (cardSet.Contains((item.DateCreated, item.Status, item.Color, item.Name)))
+                {
+                    finalCardList.Add(item);
+                }
+            }
+
+            return finalCardList;
         }
 
         public Card UpdateCard(Card card)
