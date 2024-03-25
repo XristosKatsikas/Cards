@@ -1,13 +1,12 @@
-﻿using Cards.Core.Abstractions;
-using Cards.Domain.DTOs.Requests;
+﻿using Cards.Domain.DTOs.Requests;
 using Cards.Domain.DTOs.Requests.Member;
 using Cards.Domain.DTOs.Requests.Member.Validators;
 using Cards.Domain.DTOs.Requests.Validators;
 using Cards.Domain.DTOs.Responses;
 using Cards.Domain.Enums;
-using Cards.Domain.Helpers;
 using Cards.Domain.Mappers;
 using Cards.Domain.Services.Abstractions;
+using FluentResults;
 
 namespace Cards.Domain.Services
 {
@@ -27,7 +26,7 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetUnprocessableValidationResultAsync(validationResult);
+                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
 
             var cardEntity = CardMapper.ToEntity(request);
@@ -41,18 +40,19 @@ namespace Cards.Domain.Services
             {
                 Id = id
             };
+
             var validator = new DeleteCardRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetUnprocessableValidationResultAsync(validationResult);
+                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
 
             var cardEntity = CardMapper.ToEntity(request);
 
             if (!cardEntity.Role.Equals(Role.Member.ToString()))
             {
-                return await FailedResponse.GetForbiddenResultAsync();
+                return (IResult<CardResponse>)Result.Fail("Role should be Member for this request");
             }
 
             return await _cardService.DeleteCardAsync(cardEntity);
@@ -70,14 +70,14 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetUnprocessableValidationResultAsync(validationResult);
+                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
 
             var cardEntity = CardMapper.ToEntity(request);
 
             if (!cardEntity.Role.Equals(Role.Member.ToString()))
             {
-                return await FailedResponse.GetForbiddenResultAsync();
+                return (IResult<CardResponse>)Result.Fail("Role should be Member for this request");
             }
 
             return await _cardService.GetCardAsync(cardEntity);
@@ -90,7 +90,7 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetEnumerableUnprocessableValidationResultAsync(validationResult);
+                return (IResult<IEnumerable<CardResponse>>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
 
             var cardsEntity = CardMapper.ToEntity(request);
@@ -107,13 +107,13 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetUnprocessableValidationResultAsync(validationResult);
+                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
             var cardEntity = CardMapper.ToEntity(request);
 
             if (!cardEntity.Role.Equals(Role.Member.ToString()))
             {
-                return await FailedResponse.GetForbiddenResultAsync();
+                return (IResult<CardResponse>)Result.Fail("Role should be Member for this request");
             }
 
             return await _cardService.UpdateCardAsync(cardEntity);

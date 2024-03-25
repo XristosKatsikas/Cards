@@ -1,10 +1,10 @@
 ﻿using Cards.Cache.Helpers;
 using Cards.Cache.Services.Abstractions;
-using Cards.Core.Abstractions;
 using Cards.Domain.DTOs.Requests;
 using Cards.Domain.DTOs.Requests.Admin;
 using Cards.Domain.DTOs.Responses;
 using Cards.Domain.Services.Abstractions;
+using FluentResults;
 
 namespace Cards.Domain.Services
 {
@@ -47,7 +47,7 @@ namespace Cards.Domain.Services
 
             var response = await _adminCardService.GetPaginatedCardsAsync(pageSize, pageIndex, request);
 
-            if (!response.Success)
+            if (!response.IsSuccess)
             {
                 return response;
             }

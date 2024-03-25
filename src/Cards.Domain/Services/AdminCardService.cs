@@ -1,12 +1,11 @@
-﻿using Cards.Core.Abstractions;
-using Cards.Domain.DTOs.Requests;
+﻿using Cards.Domain.DTOs.Requests;
 using Cards.Domain.DTOs.Requests.Admin;
 using Cards.Domain.DTOs.Requests.Admin.Validators;
 using Cards.Domain.DTOs.Requests.Validators;
 using Cards.Domain.DTOs.Responses;
-using Cards.Domain.Helpers;
 using Cards.Domain.Mappers;
 using Cards.Domain.Services.Abstractions;
+using FluentResults;
 
 namespace Cards.Domain.Services
 {
@@ -26,7 +25,7 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetUnprocessableValidationResultAsync(validationResult);
+                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
 
             var cardEntity = CardMapper.ToEntity(request);
@@ -41,7 +40,7 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetUnprocessableValidationResultAsync(validationResult);
+                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
             var cardEntity = CardMapper.ToEntity(request);
 
@@ -55,7 +54,7 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetUnprocessableValidationResultAsync(validationResult);
+                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
 
             var cardEntity = CardMapper.ToEntity(request);
@@ -70,7 +69,7 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetEnumerableUnprocessableValidationResultAsync(validationResult);
+                return (IResult<IEnumerable<CardResponse>>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
 
             var cardEntity = CardMapper.ToEntity(request);
@@ -85,7 +84,7 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return await FailedResponse.GetUnprocessableValidationResultAsync(validationResult);
+                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
             var cardEntity = CardMapper.ToEntity(request);
 

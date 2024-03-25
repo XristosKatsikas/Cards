@@ -1,6 +1,6 @@
-﻿using Cards.Core.Abstractions;
-using Cards.Domain.DTOs.Responses;
+﻿using Cards.Domain.DTOs.Responses;
 using Cards.Domain.Entities;
+using FluentResults;
 
 namespace Cards.Domain.Services.Abstractions
 {

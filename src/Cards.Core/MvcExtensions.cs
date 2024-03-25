@@ -1,18 +1,18 @@
-﻿using Cards.Core.Abstractions;
+﻿using FluentResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Cards.Core
 {
     public static class MvcExtensions
     {
-        public static CardsObjectResult<T> ApiResponse<T>(this ControllerBase controller, IResult<T> result)
+        public static ObjectResult ApiResponse<T>(this ControllerBase controller, IResult<T> result)
         {
             if (controller == null)
             {
                 throw new ArgumentNullException(nameof(controller));
             }
 
-            return new CardsObjectResult<T>(result);
+            return new ObjectResult(result);
         }
     }
 }

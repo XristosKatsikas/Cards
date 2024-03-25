@@ -1,7 +1,7 @@
-﻿using Cards.Core.Abstractions;
-using Cards.Domain.DTOs.Requests;
+﻿using Cards.Domain.DTOs.Requests;
 using Cards.Domain.DTOs.Requests.Admin;
 using Cards.Domain.DTOs.Responses;
+using FluentResults;
 
 namespace Cards.Domain.Services.Abstractions
 {

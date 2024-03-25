@@ -1,11 +1,10 @@
 ﻿using Cards.Core;
-using Cards.Core.Abstractions;
 using Cards.Domain.DTOs.Responses;
 using Cards.Domain.Entities;
-using Cards.Domain.Helpers;
 using Cards.Domain.Mappers;
 using Cards.Domain.Repositories.Abstractions;
 using Cards.Domain.Services.Abstractions;
+using FluentResults;
 using Microsoft.Extensions.Logging;
 
 namespace Cards.Domain.Services
@@ -31,18 +30,18 @@ namespace Cards.Domain.Services
 
                 if (card is null)
                 {
-                    return await FailedResponse.GetBadRequestResultAsync(cardEntity.Id);
+                    return (IResult<CardResponse>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
                 }
 
                 await _cardRepository.UnitOfWork.SaveChangesAsync();
 
-                return Result<CardResponse>.CreateSuccessful(card.ToResponse());
+                return Result.Ok(card.ToResponse());
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Exception was thrown from {nameof(AddCardAsync)}");
 
-                return Result<CardResponse>.CreateFailed(_logger, ResultCode.BadGateway, ex.Message);
+                return (IResult<CardResponse>)Result.Fail(ex.Message);
             }
         }
 
@@ -54,18 +53,18 @@ namespace Cards.Domain.Services
 
                 if (card is null)
                 {
-                    return await FailedResponse.GetBadRequestResultAsync(cardEntity.Id);
+                    return (IResult<CardResponse>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
                 }
 
                 await _cardRepository.UnitOfWork.SaveChangesAsync();
 
-                return Result<CardResponse>.CreateSuccessful(card.ToResponse());
+                return Result.Ok(card.ToResponse());
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Exception was thrown from {nameof(DeleteCardAsync)}");
 
-                return Result<CardResponse>.CreateFailed(_logger, ResultCode.BadGateway, ex.Message);
+                return (IResult<CardResponse>)Result.Fail(ex.Message);
             }
         }
 
@@ -77,18 +76,18 @@ namespace Cards.Domain.Services
                 
                 if (card is null)
                 {
-                    return await FailedResponse.GetBadRequestResultAsync(cardEntity.Id);
+                    return (IResult<CardResponse>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
                 }
 
                 await _cardRepository.UnitOfWork.SaveChangesAsync();
 
-                return Result<CardResponse>.CreateSuccessful(card.ToResponse());
+                return Result.Ok(card.ToResponse());
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Exception was thrown from {nameof(UpdateCardAsync)}");
 
-                return Result<CardResponse>.CreateFailed(_logger, ResultCode.BadGateway, ex.Message);
+                return (IResult<CardResponse>)Result.Fail(ex.Message);
             }
         }
 
@@ -100,16 +99,16 @@ namespace Cards.Domain.Services
 
                 if (card is null)
                 {
-                    return await FailedResponse.GetBadRequestResultAsync(cardEntity.Id);
+                    return (IResult<CardResponse>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
                 }
 
-                return Result<CardResponse>.CreateSuccessful(card.ToResponse());
+                return Result.Ok(card.ToResponse());
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Exception was thrown from {nameof(GetCardAsync)}");
 
-                return Result<CardResponse>.CreateFailed(_logger, ResultCode.BadGateway, ex.Message);
+                return (IResult<CardResponse>)Result.Fail(ex.Message);
             }
         }
 
@@ -117,10 +116,11 @@ namespace Cards.Domain.Services
         {
             try
             {
-                var cardsCount = cards.Count();
+                var getCards = await _cardRepository.GetCardsAsync(cards);
+                var cardsCount = getCards.Count();
 
                 // ordered by Name
-                var orderedCardsOnPage = cards.ToEnumerableResponse()
+                var orderedCardsOnPage = getCards.ToEnumerableResponse()
                     .OrderBy(c => c.Name)
                     .Skip(pageSize * pageIndex)
                     .Take(pageSize);
@@ -128,13 +128,13 @@ namespace Cards.Domain.Services
                 var model = new PaginatedEntityResponseModel<CardResponse>(
                     pageIndex, pageSize, cardsCount, orderedCardsOnPage);
 
-                return Result<IEnumerable<CardResponse>>.CreateSuccessful(model.Data);
+                return Result.Ok(model.Data);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Exception was thrown from {nameof(GetPaginatedCardsAsync)}");
 
-                return Result<IEnumerable<CardResponse>>.CreateFailed(_logger, ResultCode.BadGateway, ex.Message);
+                return (IResult<IEnumerable<CardResponse>>)Result.Fail(ex.Message);
             }
         }
     }

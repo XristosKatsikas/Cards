@@ -1,6 +1,5 @@
 ﻿using Cards.Domain.Entities;
 using Cards.Domain.Repositories.Abstractions;
-using Cards.Domain.DTOs.Requests;
 
 namespace Cards.Infrastructure.Repositories
 {
@@ -29,17 +28,18 @@ namespace Cards.Infrastructure.Repositories
             return await GetAsyncById(id) ?? throw new InvalidDataException();
         }
 
-        public async Task<IEnumerable<Card>> GetCardsAsync(GetCardsRequest request)
+        public async Task<IEnumerable<Card>> GetCardsAsync(IEnumerable<Card> cards)
         {
-            var getAllCards =  await GetAllAsync();
+            var fetchAllCards =  await GetAllAsync();
 
-            var cards = getAllCards
-                .Where(x => x.DateCreated == request.DateCreated)
-                .Where(x => x.Status.ToString() == request.Status)
-                .Where(x => x.Color == request.Color)
-                .Where(x => x.Name == request.Name);
+            var finalCards = fetchAllCards
+                .Join(cards,
+                    fetchedCard => new { fetchedCard.Name, fetchedCard.DateCreated, fetchedCard.Color, fetchedCard.Status },
+                    card => new { card.Name, card.DateCreated, card.Color, card.Status },
+                    (fetchedCard, card) => fetchedCard)
+                .ToList();
 
-            return cards;
+            return finalCards;
         }
 
         public Card UpdateCard(Card card)
