@@ -6,6 +6,9 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1193C9A0-37B3-4633-9DF7-EA1F31528049}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cards.API", "src\Cards.API\Cards.API.csproj", "{92345170-011B-4942-8494-192DFB3363F4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{70E011D6-F2BF-419C-9AC4-D9EA1031D004} = {70E011D6-F2BF-419C-9AC4-D9EA1031D004}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cards.Domain", "src\Cards.Domain\Cards.Domain.csproj", "{698F5123-F1EB-4A9F-98BB-5A41B4E82C84}"
 EndProject
