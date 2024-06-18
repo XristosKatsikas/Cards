@@ -45,26 +45,26 @@ namespace Cards.Domain.Services
             }
         }
 
-        public async Task<IResult<CardResponse>> DeleteCardAsync(Card cardEntity)
+        public async Task<IResult<bool>> DeleteCardAsync(Card cardEntity)
         {
             try
             {
-                var card = _cardRepository.DeleteCard(cardEntity);
+                var isCardDeleted = _cardRepository.DeleteCard(cardEntity);
 
-                if (card is null)
+                if (!isCardDeleted)
                 {
-                    return (IResult<CardResponse>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
+                    return (IResult<bool>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
                 }
 
                 await _cardRepository.UnitOfWork.SaveChangesAsync();
 
-                return Result.Ok(card.ToResponse());
+                return Result.Ok(isCardDeleted);
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Exception was thrown from {nameof(DeleteCardAsync)}");
 
-                return (IResult<CardResponse>)Result.Fail(ex.Message);
+                return (IResult<bool>)Result.Fail(ex.Message);
             }
         }
 

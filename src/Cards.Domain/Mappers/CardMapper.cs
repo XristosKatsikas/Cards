@@ -46,14 +46,14 @@ namespace Cards.Domain.Mappers
             return Mapper.Map<Card>(request);
         }
 
-        public static CardResponse ToResponse(this Card project)
+        public static CardResponse ToResponse(this Card card)
         {
-            return Mapper.Map<CardResponse>(project);
+            return Mapper.Map<CardResponse>(card);
         }
 
-        public static IEnumerable<CardResponse> ToEnumerableResponse(this IEnumerable<Card> project)
+        public static IEnumerable<CardResponse> ToEnumerableResponse(this IEnumerable<Card> cards)
         {
-            return Mapper.Map<IEnumerable<CardResponse>>(project);
+            return Mapper.Map<IEnumerable<CardResponse>>(cards);
         }
     }
 }

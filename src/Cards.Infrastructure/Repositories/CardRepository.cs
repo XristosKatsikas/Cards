@@ -1,7 +1,6 @@
 ﻿using Cards.Domain.Entities;
 using Cards.Domain.Enums;
 using Cards.Domain.Repositories.Abstractions;
-using System.Linq;
 
 namespace Cards.Infrastructure.Repositories
 {
@@ -64,13 +63,15 @@ namespace Cards.Infrastructure.Repositories
             return null!;
         }
 
-        public Card DeleteCard(Card card)
+        public bool DeleteCard(Card card)
         {
             if (card is not null)
             {
-                return Delete(card);
+                var cardToDelete = Delete(card);
+                if (cardToDelete is null)
+                    return true;
             }
-            return null!;
+            return false;
         }
     }
 }

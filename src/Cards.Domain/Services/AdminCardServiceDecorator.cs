@@ -24,7 +24,7 @@ namespace Cards.Domain.Services
             return await _adminCardService.AddCardAsync(request);
         }
 
-        public async Task<IResult<CardResponse>> DeleteCardAsync(DeleteCardRequest request)
+        public async Task<IResult<bool>> DeleteCardAsync(DeleteCardRequest request)
         {
             return await _adminCardService.DeleteCardAsync(request);
         }

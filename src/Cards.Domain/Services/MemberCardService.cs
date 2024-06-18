@@ -34,7 +34,7 @@ namespace Cards.Domain.Services
             return await _cardService.AddCardAsync(cardEntity);
         }
 
-        public async Task<IResult<CardResponse>> DeleteCardAsync(Guid id)
+        public async Task<IResult<bool>> DeleteCardAsync(Guid id)
         {
             var request = new DeleteCardRequest()
             {
@@ -45,14 +45,14 @@ namespace Cards.Domain.Services
             var validationResult = await validator.ValidateAsync(request);
             if (!validationResult.IsValid)
             {
-                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                return (IResult<bool>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
 
             var cardEntity = CardMapper.ToEntity(request);
 
             if (!cardEntity.Role.Equals(Role.Member.ToString()))
             {
-                return (IResult<CardResponse>)Result.Fail("Role should be Member for this request");
+                return (IResult<bool>)Result.Fail("Role should be Member for this request");
             }
 
             return await _cardService.DeleteCardAsync(cardEntity);

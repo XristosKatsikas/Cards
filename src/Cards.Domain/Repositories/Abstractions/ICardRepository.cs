@@ -8,7 +8,7 @@ namespace Cards.Domain.Repositories.Abstractions
         Task<Card> GetCardByIdAsync(Guid id);
         Card AddCard(Card card);
         Card UpdateCard(Card card);
-        Card DeleteCard(Card card);
+        bool DeleteCard(Card card);
         IUnitOfWork UnitOfWork { get; }
     }
 }

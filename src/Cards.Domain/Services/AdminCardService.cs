@@ -33,14 +33,14 @@ namespace Cards.Domain.Services
             return await _cardService.AddCardAsync(cardEntity);
         }
 
-        public async Task<IResult<CardResponse>> DeleteCardAsync(DeleteCardRequest request)
+        public async Task<IResult<bool>> DeleteCardAsync(DeleteCardRequest request)
         {
             var validator = new DeleteCardRequestValidator();
             var validationResult = await validator.ValidateAsync(request);
 
             if (!validationResult.IsValid)
             {
-                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                return (IResult<bool>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
             }
             var cardEntity = CardMapper.ToEntity(request);
 

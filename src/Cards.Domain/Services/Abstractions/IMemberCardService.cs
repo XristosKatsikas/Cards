@@ -9,7 +9,7 @@ namespace Cards.Domain.Services.Abstractions
     {
         Task<IResult<CardResponse>> AddCardAsync(AddMemberCardRequest request);
 
-        Task<IResult<CardResponse>> DeleteCardAsync(Guid id);
+        Task<IResult<bool>> DeleteCardAsync(Guid id);
 
         Task<IResult<CardResponse>> UpdateCardAsync(UpdateCardRequest request);
 

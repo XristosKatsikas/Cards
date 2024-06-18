@@ -1,5 +1,4 @@
 ﻿using Cards.API.Conventions;
-using Cards.Core;
 using Cards.Domain.DTOs.Requests;
 using Cards.Domain.DTOs.Requests.Admin;
 using Cards.Domain.Services.Abstractions;
@@ -24,17 +23,17 @@ namespace Cards.API.Controllers
 
         [HttpPost()]
         [ApiConventionMethod(typeof(ApiConvention), nameof(DefaultApiConventions.Create))]
-        public async Task<IActionResult> AddCardAsync(AddAdminCardRequest addCardRequest)
+        public async Task<IActionResult> AddCardAsync([FromBody] AddAdminCardRequest addCardRequest)
         {
-            return this.ApiResponse(await _cardService.AddCardAsync(addCardRequest));
+            return new ObjectResult(await _cardService.AddCardAsync(addCardRequest));
         }
 
         [HttpPut("card/{id:guid}")]
         [ApiConventionMethod(typeof(ApiConvention), nameof(DefaultApiConventions.Update))]
-        public async Task<IActionResult> UpdateCardAsync(Guid id, UpdateCardRequest updateCardRequest)
+        public async Task<IActionResult> UpdateCardAsync(Guid id, [FromBody] UpdateCardRequest updateCardRequest)
         {
             updateCardRequest.Id = id;
-            return this.ApiResponse(await _cardService.UpdateCardAsync(updateCardRequest));
+            return new ObjectResult(await _cardService.UpdateCardAsync(updateCardRequest));
         }
 
         [HttpDelete("card/{id:guid}")]
@@ -42,7 +41,7 @@ namespace Cards.API.Controllers
         public async Task<IActionResult> DeleteCardAsync(Guid id, DeleteCardRequest deleteCardRequest)
         {
             deleteCardRequest.Id = id;
-            return this.ApiResponse(await _cardService.DeleteCardAsync(deleteCardRequest));
+            return new ObjectResult(await _cardService.DeleteCardAsync(deleteCardRequest));
         }
 
         [HttpGet("card/{id:guid}")]
@@ -50,14 +49,14 @@ namespace Cards.API.Controllers
         public async Task<IActionResult> GetCardAsync(Guid id, GetCardRequest getCardRequest)
         {
             getCardRequest.Id = id;
-            return this.ApiResponse(await _cardService.GetCardAsync(getCardRequest));
+            return new ObjectResult(await _cardService.GetCardAsync(getCardRequest));
         }
 
         [HttpGet("cards")]
         [ApiConventionMethod(typeof(ApiConvention), nameof(DefaultApiConventions.Get))]
         public async Task<IActionResult> GetCardsAsync(GetCardsRequest getCardsRequest, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
         {
-            return this.ApiResponse(await _cardService.GetPaginatedCardsAsync(pageSize, pageIndex, getCardsRequest));
+            return new ObjectResult(await _cardService.GetPaginatedCardsAsync(pageSize, pageIndex, getCardsRequest));
         }
     }
 }
