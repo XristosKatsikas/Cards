@@ -9,7 +9,7 @@ using FluentResults;
 
 namespace Cards.Domain.Services
 {
-    internal class AdminCardService : IAdminCardService
+    public class AdminCardService : IAdminCardService
     {
         private readonly ICardService _cardService;
 

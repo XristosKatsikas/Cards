@@ -29,9 +29,9 @@ namespace Cards.Domain.Services
             return await _adminCardService.DeleteCardAsync(request);
         }
 
-        public Task<IResult<CardResponse>> GetCardAsync(GetCardRequest request)
+        public async Task<IResult<CardResponse>> GetCardAsync(GetCardRequest request)
         {
-            throw new NotImplementedException();
+            return await _adminCardService.GetCardAsync(request);
         }
 
         public async Task<IResult<IEnumerable<CardResponse>>> GetPaginatedCardsAsync(int pageSize, int pageIndex, GetCardsRequest request)
