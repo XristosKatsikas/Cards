@@ -25,7 +25,13 @@ namespace Cards.Infrastructure.Repositories
 
         public async Task<ApplicationUser> GetByEmailAsync(string requestEmail, CancellationToken cancellationToken)
         {
-            return await _userManager.Users.FirstOrDefaultAsync(user => user.Email == requestEmail, cancellationToken);
+            var getUserByEmail = await _userManager.Users.FirstOrDefaultAsync(user => user.Email == requestEmail, cancellationToken);
+
+            if (getUserByEmail is not null)
+            {
+                return getUserByEmail; 
+            }
+            return null!;
         }
 
         public async Task<bool> SignUpAsync(ApplicationUser user, string password, CancellationToken cancellationToken)
