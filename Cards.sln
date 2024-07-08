@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cards.Core", "src\Cards.Cor
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Cards.Cache", "src\Cards.Cache\Cards.Cache.csproj", "{70E011D6-F2BF-419C-9AC4-D9EA1031D004}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cards.Core.WebApi", "src\Cards.Core.WebApi\Cards.Core.WebApi.csproj", "{3038BF3A-8CEA-4A92-936B-AF1802C90D94}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -44,6 +46,10 @@ Global
 		{70E011D6-F2BF-419C-9AC4-D9EA1031D004}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{70E011D6-F2BF-419C-9AC4-D9EA1031D004}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{70E011D6-F2BF-419C-9AC4-D9EA1031D004}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3038BF3A-8CEA-4A92-936B-AF1802C90D94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3038BF3A-8CEA-4A92-936B-AF1802C90D94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3038BF3A-8CEA-4A92-936B-AF1802C90D94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3038BF3A-8CEA-4A92-936B-AF1802C90D94}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 		{5116FA4D-76D4-4D97-BC6D-39C2C4A877D4} = {1193C9A0-37B3-4633-9DF7-EA1F31528049}
 		{110AC923-8C2B-406B-8D4C-E08361E62E72} = {1193C9A0-37B3-4633-9DF7-EA1F31528049}
 		{70E011D6-F2BF-419C-9AC4-D9EA1031D004} = {1193C9A0-37B3-4633-9DF7-EA1F31528049}
+		{3038BF3A-8CEA-4A92-936B-AF1802C90D94} = {1193C9A0-37B3-4633-9DF7-EA1F31528049}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {4BFD9618-4A4D-470C-94CA-AE3D458B33BE}

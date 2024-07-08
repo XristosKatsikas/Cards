@@ -8,6 +8,7 @@ using Cards.Cache.Extensions;
 using Cards.Cache.Healthchecks;
 using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
+using Cards.Core.WebApi.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -64,6 +65,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseAuthentication();
 app.UseAuthorization();
+
+app.UseMiddleware<RetryPolicyMiddleware>();
 
 app.UseHttpsRedirection();
 
