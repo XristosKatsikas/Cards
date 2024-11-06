@@ -7,7 +7,5 @@
         public string Secret { get; set; } = string.Empty;
         public string JwtRegisteredClaimNamesSub { get; set; } = string.Empty;
         public int ExpirationDays { get; set; }
-
-
     }
 }

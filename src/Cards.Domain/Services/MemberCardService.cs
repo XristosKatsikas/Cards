@@ -1,4 +1,5 @@
-﻿using Cards.Domain.DTOs.Requests;
+﻿using Cards.Core;
+using Cards.Domain.DTOs.Requests;
 using Cards.Domain.DTOs.Requests.Member;
 using Cards.Domain.DTOs.Requests.Member.Validators;
 using Cards.Domain.DTOs.Requests.Validators;
@@ -7,16 +8,19 @@ using Cards.Domain.Enums;
 using Cards.Domain.Mappers;
 using Cards.Domain.Services.Abstractions;
 using FluentResults;
+using Microsoft.Extensions.Logging;
 
 namespace Cards.Domain.Services
 {
     public class MemberCardService : IMemberCardService
     {
+        private readonly ILogger<MemberCardService> _logger;
         private readonly ICardService _cardService;
 
-        public MemberCardService(ICardService cardService)
+        public MemberCardService(ICardService cardService, ILogger<MemberCardService> logger)
         {
             _cardService = cardService;
+            _logger = logger;
         }
 
         public async Task<IResult<CardResponse>> AddCardAsync(AddMemberCardRequest request)
@@ -26,7 +30,11 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in MemberCardService.{nameof(AddCardAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
+
+                return Result.Fail<CardResponse>(FailedResultMessage.RequestValidation);
             }
 
             var cardEntity = CardMapper.ToEntity(request);
@@ -45,14 +53,19 @@ namespace Cards.Domain.Services
             var validationResult = await validator.ValidateAsync(request);
             if (!validationResult.IsValid)
             {
-                return (IResult<bool>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in MemberCardService.{nameof(DeleteCardAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
+
+                return Result.Fail<bool>(FailedResultMessage.RequestValidation);
             }
 
             var cardEntity = CardMapper.ToEntity(request);
 
             if (!cardEntity.Role.Equals(Role.Member.ToString()))
             {
-                return (IResult<bool>)Result.Fail("Role should be Member for this request");
+                _logger.LogError($"Delete data from MemberCardService.{nameof(DeleteCardAsync)} has failed due to role error.");
+                return Result.Fail<bool>(FailedResultMessage.Unprocessable);
             }
 
             return await _cardService.DeleteCardAsync(cardEntity);
@@ -70,14 +83,19 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in MemberCardService.{nameof(GetCardAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
+
+                return Result.Fail<CardResponse>(FailedResultMessage.RequestValidation);
             }
 
             var cardEntity = CardMapper.ToEntity(request);
 
             if (!cardEntity.Role.Equals(Role.Member.ToString()))
             {
-                return (IResult<CardResponse>)Result.Fail("Role should be Member for this request");
+                _logger.LogError($"Fetch data from MemberCardService.{nameof(GetCardAsync)} has failed due to role error.");
+                return Result.Fail<CardResponse>(FailedResultMessage.Unprocessable);
             }
 
             return await _cardService.GetCardAsync(cardEntity);
@@ -90,7 +108,11 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return (IResult<IEnumerable<CardResponse>>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in MemberCardService.{nameof(GetPaginatedCardsAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
+
+                return Result.Fail<IEnumerable<CardResponse>>(FailedResultMessage.RequestValidation);
             }
 
             var cardsEntity = CardMapper.ToEntity(request);
@@ -107,13 +129,18 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in MemberCardService.{nameof(UpdateCardAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
+
+                return Result.Fail<CardResponse>(FailedResultMessage.RequestValidation);
             }
             var cardEntity = CardMapper.ToEntity(request);
 
             if (!cardEntity.Role.Equals(Role.Member.ToString()))
             {
-                return (IResult<CardResponse>)Result.Fail("Role should be Member for this request");
+                _logger.LogError($"Update data from MemberCardService.{nameof(UpdateCardAsync)} has failed due to role error.");
+                return Result.Fail<CardResponse>(FailedResultMessage.Unprocessable);
             }
 
             return await _cardService.UpdateCardAsync(cardEntity);

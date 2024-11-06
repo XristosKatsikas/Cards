@@ -10,12 +10,6 @@ namespace Cards.Cache.Extensions
     {
         private const string RedisSection = "Redis";
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
         private static IServiceCollection AddRedisOptions(
             this IServiceCollection services,
             IConfiguration configuration)
@@ -26,12 +20,6 @@ namespace Cards.Cache.Extensions
             return services;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="services"></param>
-        /// <param name="configuration"></param>
-        /// <returns></returns>
         public static IServiceCollection AddRedis(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddRedisOptions(configuration);

@@ -30,7 +30,8 @@ namespace Cards.Domain.Services
 
                 if (card is null)
                 {
-                    return (IResult<CardResponse>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
+                    _logger.LogError($"Post data from CardService.{nameof(AddCardAsync)} has failed.");
+                    return Result.Fail<CardResponse>(FailedResultMessage.Unprocessable);
                 }
 
                 await _cardRepository.UnitOfWork.SaveChangesAsync();
@@ -39,9 +40,8 @@ namespace Cards.Domain.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception was thrown from {nameof(AddCardAsync)}");
-
-                return (IResult<CardResponse>)Result.Fail(ex.Message);
+                _logger.LogError($"CardService.{nameof(AddCardAsync)} has failed with exception message: {ex.Message}");
+                return Result.Fail<CardResponse>(FailedResultMessage.Exception);
             }
         }
 
@@ -53,7 +53,8 @@ namespace Cards.Domain.Services
 
                 if (!isCardDeleted)
                 {
-                    return (IResult<bool>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
+                    _logger.LogError($"Delete data from CardService.{nameof(DeleteCardAsync)} has failed.");
+                    return Result.Fail<bool>(FailedResultMessage.NotFound);
                 }
 
                 await _cardRepository.UnitOfWork.SaveChangesAsync();
@@ -62,9 +63,8 @@ namespace Cards.Domain.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception was thrown from {nameof(DeleteCardAsync)}");
-
-                return (IResult<bool>)Result.Fail(ex.Message);
+                _logger.LogError($"CardService.{nameof(DeleteCardAsync)} has failed with exception message: {ex.Message}");
+                return Result.Fail<bool>(FailedResultMessage.Exception);
             }
         }
 
@@ -76,7 +76,8 @@ namespace Cards.Domain.Services
                 
                 if (card is null)
                 {
-                    return (IResult<CardResponse>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
+                    _logger.LogError($"Update data from CardService.{nameof(UpdateCardAsync)} has failed.");
+                    return Result.Fail<CardResponse>(FailedResultMessage.Unprocessable);
                 }
 
                 await _cardRepository.UnitOfWork.SaveChangesAsync();
@@ -85,9 +86,8 @@ namespace Cards.Domain.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception was thrown from {nameof(UpdateCardAsync)}");
-
-                return (IResult<CardResponse>)Result.Fail(ex.Message);
+                _logger.LogError($"CardService.{nameof(UpdateCardAsync)} has failed with exception message: {ex.Message}");
+                return Result.Fail<CardResponse>(FailedResultMessage.Exception);
             }
         }
 
@@ -99,16 +99,16 @@ namespace Cards.Domain.Services
 
                 if (card is null)
                 {
-                    return (IResult<CardResponse>)Result.Fail(string.Format("Bad request for card entity with id: {0}", cardEntity.Id));
+                    _logger.LogError($"Fetch data from CardService.{nameof(GetCardAsync)} has failed for id:{0}.", cardEntity.Id);
+                    return Result.Fail<CardResponse>(FailedResultMessage.NotFound);
                 }
 
                 return Result.Ok(card.ToResponse());
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception was thrown from {nameof(GetCardAsync)}");
-
-                return (IResult<CardResponse>)Result.Fail(ex.Message);
+                _logger.LogError($"CardService.{nameof(GetCardAsync)} has failed with exception message: {ex.Message}");
+                return Result.Fail<CardResponse>(FailedResultMessage.Exception);
             }
         }
 
@@ -118,6 +118,11 @@ namespace Cards.Domain.Services
             {
                 var getCards = await _cardRepository.GetCardsAsync(cards);
                 var cardsCount = getCards.Count();
+                if (cardsCount == 0)
+                {
+                    _logger.LogError($"Fetch data from CardService.{nameof(GetPaginatedCardsAsync)} has failed.");
+                    return Result.Fail<IEnumerable<CardResponse>>(FailedResultMessage.NotFound);
+                }
 
                 // ordered by Name
                 var orderedCardsOnPage = getCards.ToEnumerableResponse()
@@ -132,9 +137,8 @@ namespace Cards.Domain.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception was thrown from {nameof(GetPaginatedCardsAsync)}");
-
-                return (IResult<IEnumerable<CardResponse>>)Result.Fail(ex.Message);
+                _logger.LogError($"CardService.{nameof(GetPaginatedCardsAsync)} has failed with exception message: {ex.Message}");
+                return Result.Fail<IEnumerable<CardResponse>>(FailedResultMessage.Exception);
             }
         }
     }

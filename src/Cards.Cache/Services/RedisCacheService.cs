@@ -1,7 +1,7 @@
 ﻿using Cards.Cache.Services.Abstractions;
-using Cards.Core;
 using StackExchange.Redis;
 using System.Text;
+using System.Text.Json;
 
 namespace Cards.Cache.Services
 {
@@ -18,18 +18,13 @@ namespace Cards.Cache.Services
         {
             var keyValue = await _cacheDatabase.StringGetAsync(EnrichKey(key));
 
-            return string.IsNullOrWhiteSpace(keyValue) ? default : keyValue.ToString().FromJson<T>();
+            if (string.IsNullOrWhiteSpace(keyValue))
+            {
+                return default!;
+            }
+            return JsonSerializer.Deserialize<T>(keyValue.ToString())!;
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="absoluteExpiration"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public async Task<bool> SetDataAsync<T>(
             string key,
             T value,
@@ -38,15 +33,10 @@ namespace Cards.Cache.Services
         {
             token.ThrowIfCancellationRequested();
 
-            return await _cacheDatabase.StringSetAsync(EnrichKey(key), value!.ToJson(), absoluteExpiration);
+            return await _cacheDatabase.StringSetAsync(EnrichKey(key), JsonSerializer.Serialize(value), absoluteExpiration);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        private string EnrichKey(string key)
+        private static string EnrichKey(string key)
         {
             var context = "CardsDbUser";
             var stringBuilder = new StringBuilder().Append($"{context}:{key}");

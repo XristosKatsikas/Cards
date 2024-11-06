@@ -1,4 +1,5 @@
-﻿using Cards.Domain.DTOs.Requests;
+﻿using Cards.Core;
+using Cards.Domain.DTOs.Requests;
 using Cards.Domain.DTOs.Requests.Admin;
 using Cards.Domain.DTOs.Requests.Admin.Validators;
 using Cards.Domain.DTOs.Requests.Validators;
@@ -6,16 +7,19 @@ using Cards.Domain.DTOs.Responses;
 using Cards.Domain.Mappers;
 using Cards.Domain.Services.Abstractions;
 using FluentResults;
+using Microsoft.Extensions.Logging;
 
 namespace Cards.Domain.Services
 {
     public class AdminCardService : IAdminCardService
     {
+        private readonly ILogger<AdminCardService> _logger;
         private readonly ICardService _cardService;
 
-        public AdminCardService(ICardService cardService)
+        public AdminCardService(ICardService cardService, ILogger<AdminCardService> logger)
         {
             _cardService = cardService;
+            _logger = logger;
         }
 
         public async Task<IResult<CardResponse>> AddCardAsync(AddAdminCardRequest request)
@@ -25,12 +29,24 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in AdminCardService.{nameof(AddCardAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
+
+                return Result.Fail<CardResponse>(FailedResultMessage.RequestValidation);
             }
 
             var cardEntity = CardMapper.ToEntity(request);
 
-            return await _cardService.AddCardAsync(cardEntity);
+            try
+            {
+                return await _cardService.AddCardAsync(cardEntity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"AdminCardService.{nameof(AddCardAsync)} has failed with exception message: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<IResult<bool>> DeleteCardAsync(DeleteCardRequest request)
@@ -40,11 +56,23 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return (IResult<bool>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
-            }
-            var cardEntity = CardMapper.ToEntity(request);
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in AdminCardService.{nameof(DeleteCardAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
 
-            return await _cardService.DeleteCardAsync(cardEntity);
+                return Result.Fail<bool>(FailedResultMessage.RequestValidation);
+            }
+
+            var cardEntity = CardMapper.ToEntity(request);
+            try
+            {
+                return await _cardService.DeleteCardAsync(cardEntity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"AdminCardService.{nameof(DeleteCardAsync)} has failed with exception message: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<IResult<CardResponse>> GetCardAsync(GetCardRequest request)
@@ -54,12 +82,24 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in AdminCardService.{nameof(GetCardAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
+
+                return Result.Fail<CardResponse>(FailedResultMessage.RequestValidation);
             }
 
             var cardEntity = CardMapper.ToEntity(request);
 
-            return await _cardService.GetCardAsync(cardEntity);
+            try
+            {
+                return await _cardService.GetCardAsync(cardEntity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"AdminCardService.{nameof(GetCardAsync)} has failed with exception message: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<IResult<IEnumerable<CardResponse>>> GetPaginatedCardsAsync(int pageSize, int pageIndex, GetCardsRequest request)
@@ -69,12 +109,25 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return (IResult<IEnumerable<CardResponse>>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in AdminCardService.{nameof(GetPaginatedCardsAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
+
+                return Result.Fail<IEnumerable<CardResponse>>(FailedResultMessage.RequestValidation);
             }
 
             var cardEntity = CardMapper.ToEntity(request);
 
-            return await _cardService.GetPaginatedCardsAsync(pageSize, pageIndex, cardEntity);
+            try
+            {
+                return await _cardService.GetPaginatedCardsAsync(pageSize, pageIndex, cardEntity);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"AdminCardService.{nameof(GetPaginatedCardsAsync)} has failed with exception message: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task<IResult<CardResponse>> UpdateCardAsync(UpdateCardRequest request)
@@ -84,11 +137,23 @@ namespace Cards.Domain.Services
 
             if (!validationResult.IsValid)
             {
-                return (IResult<CardResponse>)Result.Fail(validationResult.Errors.Select(val => val.ErrorMessage).ToList());
+                var errorMessages = validationResult.Errors.Select(val => val.ErrorMessage).ToList();
+                _logger.LogError($"Validation errors occurred in AdminCardService.{nameof(UpdateCardAsync)}: " +
+                    $"{string.Join(", ", errorMessages)}");
+
+                return Result.Fail<CardResponse>(FailedResultMessage.RequestValidation);
             }
             var cardEntity = CardMapper.ToEntity(request);
 
-            return await _cardService.UpdateCardAsync(cardEntity);
+            try
+            {
+                return await _cardService.UpdateCardAsync(cardEntity);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"AdminCardService.{nameof(UpdateCardAsync)} has failed with exception message: {ex.Message}");
+                throw;
+            }
         }
     }
 }
