@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Cards.API.Controllers
 {
     [ApiController]
-    [Route("/[controller]/")]
+    [Route("/api/[controller]/")]
     [Authorize(Roles = "Admin")]
     public class AdminController : ControllerBase
     {

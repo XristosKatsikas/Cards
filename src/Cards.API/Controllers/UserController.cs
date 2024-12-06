@@ -63,6 +63,7 @@ namespace Cards.API.Controllers
         /// <returns></returns>
         [AllowAnonymous]
         [HttpPost("sign-up")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Create))]
         public async Task<IActionResult> SignUp(SignUpRequest request)
         {
             var user = await _userService.SignUpAsync(request);
